@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xlrd # para leer archivos de excell
 from scipy.optimize import curve_fit ## Ajuste de datos al modelo
+import pandas as pd
 from rutinas import *
 
 """
@@ -56,8 +57,12 @@ datos = xlrd.open_workbook("microcalorimetría-articulo.xls")
 # j  # Temp 0=25, 1=35, 2=45
 # i  # Exp 0=1, 1=2, 2=3
 
-Parm = []
-Err = []
+p1 =[]
+p2 =[]
+p3 =[]
+p4 =[]
+p5 =[]
+p6 =[]
 
 for j in range(3):
     for i in range(3):
@@ -72,13 +77,25 @@ for j in range(3):
 # Lectura de datos experimentales
         print("#############################################")
         print(" Ajustando curvas del caso   Temperatura "+nom)
+        print("")
         Q = heat[j][i+3]
         T = time[j][i+3]
         q = heat[j][i]
         t = time[j][i]
-        (param, err ) = Ajuste(Q, T, q, t)
-        print(param)
-        print(err)
+        (p, err ) = Ajuste(Q, T, q, t)
+        p = list(p)
+        p1.append(p[0]); p2.append(p[1]); p3.append(p[2]); p4.append(p[3])
+        p5.append(p[4]); p6.append(p[5])
+
+data = {'Q1': p1,
+        'Tao1': p2,
+        'Beta1': p3,
+        'Q2': p4,
+        'Tao2': p5,
+        'Beta2': p6}
+df = pd.DataFrame(data, columns=['Q1', 'Tao1', 'Beta1', 'Q2', 'Tao2', 'Beta2',])
+df.to_excel('Ajustes.xlsx')
+
 
 
 
